@@ -2,15 +2,15 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>AI Gesture Pro - Full</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Gesture Mobile & Desktop</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <button id="switch-btn" onclick="location.reload()">🔄 SIFIRLA</button>
-
     <div id="overlay">
         <div class="glass-card">
-            <h1>HAREKET ALGILAYICI</h1>
+            <h1>HAREKET SİSTEMİ</h1>
+            <p>Lütfen bir mod seçin:</p>
             <div class="btn-group">
                 <button class="main-btn" onclick="startMode('HAND')">EL MODU</button>
                 <button class="main-btn" onclick="startMode('FACE')">YÜZ MODU</button>
@@ -18,19 +18,21 @@
         </div>
     </div>
 
+    <button id="reset-btn" onclick="location.reload()">🔄 SIFIRLA</button>
+
     <img id="img-surprise" class="gesture-img" src="https://i.hizliresim.com/opppdr4.png">
     <img id="img-stop" class="gesture-img" src="https://i.hizliresim.com/ha2k3bf.png">
     <img id="img-wolf" class="gesture-img" src="https://i.hizliresim.com/rahonin.png">
     <img id="img-middle" class="gesture-img" src="https://i.hizliresim.com/pm8mrtl.png">
     <img id="img-like" class="gesture-img" src="https://i.hizliresim.com/pt5yx8s.png">
 
-    <div id="cam-container">
+    <div class="container">
         <video id="webcam" autoplay playsinline></video>
         <canvas id="output-canvas"></canvas>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
     <script src="script.js"></script>

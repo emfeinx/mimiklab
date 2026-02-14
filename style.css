@@ -1,4 +1,10 @@
-body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+body { 
+    margin: 0; 
+    background: #000; 
+    overflow: hidden; 
+    font-family: 'Segoe UI', sans-serif; 
+    touch-action: none; /* Mobilde yanlışlıkla kaydırmayı önler */
+}
 
 .container { 
     position: relative; 
@@ -11,7 +17,7 @@ body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', s
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1); /* Ayna efekti */
+    transform: scaleX(-1);
 }
 
 #output-canvas { z-index: 10; }
@@ -23,7 +29,6 @@ body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', s
     display: none;
     z-index: 100;
     pointer-events: none;
-    /* Yaylanma ve doğrusal takip efekti */
     transition: left 0.1s ease-out, top 0.1s ease-out;
 }
 
@@ -39,24 +44,27 @@ body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', s
 
 .glass-card {
     background: rgba(255,255,255,0.1);
-    padding: 40px;
+    padding: 30px;
     border-radius: 20px;
     text-align: center;
     color: white;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.2);
+    width: 300px;
 }
 
 .main-btn {
-    padding: 15px 30px;
-    margin: 10px;
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
     font-size: 18px;
     cursor: pointer;
     border: none;
     border-radius: 10px;
     background: #00f2ff;
     font-weight: bold;
-    transition: 0.3s;
+    color: #000;
 }
 
 #reset-btn {
@@ -64,8 +72,23 @@ body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', s
     top: 20px;
     right: 20px;
     z-index: 1100;
-    padding: 10px 20px;
+    padding: 10px;
     background: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- MOBİL ÖZEL AYARLAR --- */
+@media (max-width: 768px) {
+    .gesture-img {
+        width: 130px; /* Mobilde görselleri küçült */
+    }
+    .glass-card {
+        width: 85%;
+    }
+    .main-btn {
+        padding: 20px; /* Daha kolay tıklama alanı */
+    }
 }
