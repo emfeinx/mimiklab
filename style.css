@@ -1,0 +1,71 @@
+body { margin: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+
+.container { 
+    position: relative; 
+    width: 100vw; 
+    height: 100vh; 
+}
+
+#webcam, #output-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Ayna efekti */
+}
+
+#output-canvas { z-index: 10; }
+
+.gesture-img {
+    position: absolute;
+    width: 180px;
+    height: auto;
+    display: none;
+    z-index: 100;
+    pointer-events: none;
+    /* Yaylanma ve doğrusal takip efekti */
+    transition: left 0.1s ease-out, top 0.1s ease-out;
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-card {
+    background: rgba(255,255,255,0.1);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.main-btn {
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background: #00f2ff;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#reset-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
