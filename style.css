@@ -2,8 +2,8 @@ body {
     margin: 0; 
     background: #000; 
     overflow: hidden; 
-    font-family: 'Segoe UI', sans-serif; 
-    touch-action: none; /* Mobilde yanlışlıkla kaydırmayı önler */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    touch-action: none;
 }
 
 .container { 
@@ -20,7 +20,10 @@ body {
     transform: scaleX(-1);
 }
 
-#output-canvas { z-index: 10; }
+#output-canvas { 
+    z-index: 10; 
+    filter: drop-shadow(0 0 8px #00f2ff); /* İskelete parlama efekti */
+}
 
 .gesture-img {
     position: absolute;
@@ -35,7 +38,7 @@ body {
 #overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: radial-gradient(circle, rgba(0,20,30,0.9) 0%, rgba(0,0,0,1) 100%);
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -43,52 +46,47 @@ body {
 }
 
 .glass-card {
-    background: rgba(255,255,255,0.1);
-    padding: 30px;
-    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    padding: 40px;
+    border-radius: 24px;
     text-align: center;
     color: white;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    width: 300px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,242,255,0.3);
+    box-shadow: 0 0 30px rgba(0,242,255,0.1);
 }
 
 .main-btn {
     display: block;
     width: 100%;
-    padding: 15px;
-    margin: 10px 0;
-    font-size: 18px;
+    padding: 18px;
+    margin: 15px 0;
+    font-size: 1.1rem;
     cursor: pointer;
     border: none;
-    border-radius: 10px;
-    background: #00f2ff;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00f2ff, #00d1db);
     font-weight: bold;
     color: #000;
+    transition: 0.3s;
 }
+
+.main-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px #00f2ff; }
 
 #reset-btn {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1100;
-    padding: 10px;
-    background: white;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.9);
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
 }
 
-/* --- MOBİL ÖZEL AYARLAR --- */
 @media (max-width: 768px) {
-    .gesture-img {
-        width: 130px; /* Mobilde görselleri küçült */
-    }
-    .glass-card {
-        width: 85%;
-    }
-    .main-btn {
-        padding: 20px; /* Daha kolay tıklama alanı */
-    }
+    .gesture-img { width: 130px; }
+    .glass-card { width: 80%; }
 }
