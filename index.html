@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Face & Hand Tracker Pro</title>
+    <title>MİMİKLAB | AI Vision</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="overlay">
         <div class="glass-card">
-            <h1>AI HAREKET SİSTEMİ</h1>
-            <p>Başlamak için bir mod seçin:</p>
-            <div class="btn-group">
-                <button class="main-btn" onclick="startMode('HAND')">EL MODU</button>
-                <button class="main-btn" onclick="startMode('FACE')">YÜZ MODU</button>
+            <div class="logo-container">
+                <div class="scanner-line"></div>
+                <h1>MİMİK<span>LAB</span></h1>
             </div>
+            <p>Sistemi başlatmak için bir mod seçin</p>
+            <div class="btn-group">
+                <button id="hand-btn" class="main-btn hand-btn">🖐 EL MODU</button>
+                <button id="face-btn" class="main-btn face-btn">👤 YÜZ MODU</button>
+            </div>
+            <div class="system-status"><span class="dot"></span> SİSTEM AKTİF</div>
         </div>
     </div>
 
     <button id="reset-btn" onclick="location.reload()">🔄 SIFIRLA</button>
 
+    <img id="img-special" class="gesture-img" src="https://i.hizliresim.com/7df19sq.png">
     <img id="img-surprise" class="gesture-img" src="https://i.hizliresim.com/opppdr4.png">
     <img id="img-stop" class="gesture-img" src="https://i.hizliresim.com/ha2k3bf.png">
     <img id="img-wolf" class="gesture-img" src="https://i.hizliresim.com/rahonin.png">
