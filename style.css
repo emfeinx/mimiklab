@@ -1,17 +1,50 @@
 body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; touch-action: none; }
-#overlay { position: fixed; inset: 0; background: radial-gradient(circle, #0a192f 0%, #000 100%); z-index: 1000; display: flex; justify-content: center; align-items: center; }
-.glass-card { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; text-align: center; color: white; backdrop-filter: blur(20px); border: 1px solid rgba(0,242,255,0.2); width: 300px; position: relative; }
-h1 { font-size: 2.2rem; letter-spacing: 4px; margin: 0; }
+
+#overlay { 
+    position: fixed; inset: 0; 
+    background: radial-gradient(circle, #0a192f 0%, #000 100%); 
+    z-index: 1000; display: flex; justify-content: center; align-items: center; 
+}
+
+.glass-card { 
+    background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; 
+    text-align: center; color: white; backdrop-filter: blur(20px); 
+    border: 1px solid rgba(0,242,255,0.2); width: 320px; position: relative; 
+}
+
+h1 { font-size: 2.2rem; letter-spacing: 4px; margin: 0; font-weight: 800; }
 h1 span { color: #00f2ff; text-shadow: 0 0 15px #00f2ff; }
-.scanner-line { position: absolute; width: 100%; height: 2px; background: #00f2ff; top: 0; left: 0; animation: scan 3s linear infinite; box-shadow: 0 0 10px #00f2ff; }
+
+.scanner-line { 
+    position: absolute; width: 100%; height: 2px; background: #00f2ff; 
+    top: 0; left: 0; animation: scan 3s linear infinite; box-shadow: 0 0 10px #00f2ff; 
+}
+
 @keyframes scan { 0%, 100% { top: 0; } 50% { top: 100%; } }
-.main-btn { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-weight: bold; transition: 0.3s; background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; }
+
+.main-btn { 
+    width: 100%; padding: 18px; margin: 12px 0; border-radius: 15px; 
+    border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-weight: bold; 
+    transition: 0.3s; background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; 
+}
+
 .hand-btn:hover { background: #00f2ff; color: #000; box-shadow: 0 0 20px #00f2ff; transform: scale(1.05); }
 .face-btn:hover { background: #ff00ff; color: #fff; box-shadow: 0 0 20px #ff00ff; transform: scale(1.05); }
+
+.system-status { margin-top: 25px; font-size: 0.8rem; color: rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.dot { width: 8px; height: 8px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+
 .container { position: relative; width: 100vw; height: 100vh; }
 #webcam, #output-canvas { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-#output-canvas { z-index: 10; }
-.gesture-img { position: absolute; width: 220px; display: none; z-index: 100; pointer-events: none; transition: all 0.1s ease-out; }
-#reset-btn { position: fixed; top: 20px; right: 20px; z-index: 1100; padding: 10px 15px; border-radius: 8px; cursor: pointer; border: none; background: #fff; font-weight: bold; }
-.dot { width: 8px; height: 8px; background: #0f0; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; box-shadow: 0 0 5px #0f0; }
-@keyframes blink { 50% { opacity: 0.3; } }
+
+.gesture-img { 
+    position: absolute; width: 220px; display: none; z-index: 100; 
+    pointer-events: none; transition: all 0.1s ease-out; 
+}
+
+#reset-btn { 
+    position: fixed; top: 20px; right: 20px; z-index: 1100; 
+    padding: 10px 15px; border-radius: 8px; cursor: pointer; 
+    border: none; background: #fff; font-weight: bold; 
+}

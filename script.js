@@ -4,6 +4,8 @@ const canvasCtx = canvasElement.getContext('2d');
 const overlay = document.getElementById('overlay');
 
 const imgs = {
+    salute: document.getElementById('img-salute'),
+    heart: document.getElementById('img-heart'),
     special: document.getElementById('img-special'),
     surprise: document.getElementById('img-surprise'),
     stop: document.getElementById('img-stop'),
@@ -12,8 +14,10 @@ const imgs = {
     like: document.getElementById('img-like')
 };
 
-let detector = null;
+let hands = null;
+let faceMesh = null;
 let lastPos = { x: 0.5, y: 0.5 };
+let currentFaceLandmarks = null; // Yüz verisini burada saklayacağız
 
 function hideAll() { Object.values(imgs).forEach(img => img.style.display = 'none'); }
 
@@ -26,77 +30,75 @@ function updatePos(id, x, y) {
     img.style.top = `${lastPos.y * window.innerHeight - (img.clientHeight + 50)}px`;
 }
 
-// Buton dinleyicilerini JS içinden ekleyelim (Daha garanti bir yöntem)
-document.getElementById('hand-btn').addEventListener('click', () => startMode('HAND'));
-document.getElementById('face-btn').addEventListener('click', () => startMode('FACE'));
-
-async function startMode(mode) {
-    overlay.style.display = 'none';
-    if (mode === 'HAND') {
-        initHands();
-    } else {
-        initFace();
-    }
+function getDist(p1, p2) {
+    return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
 
-function initHands() {
-    detector = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    detector.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7 });
+// Buton Etkinleştirme
+document.getElementById('hand-btn').addEventListener('click', () => startApp());
+document.getElementById('face-btn').addEventListener('click', () => startApp());
 
-    detector.onResults(results => {
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        hideAll();
-        
-        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-            let specialCount = 0;
-            let centerX = 0, centerY = 0;
+async function startApp() {
+    overlay.style.display = 'none';
+    initModels();
+}
 
-            results.multiHandLandmarks.forEach((h) => {
-                const indexUp = h[8].y < h[6].y;
-                const midUp = h[12].y < h[10].y;
-                const ringUp = h[16].y < h[14].y;
-                const pinkyUp = h[20].y < h[18].y;
-
-                // Çift El Özel Hareket: Sadece işaret parmağı havada
-                if (indexUp && !midUp && !ringUp && !pinkyUp) specialCount++;
-
-                centerX += h[9].x; centerY += h[9].y;
-
-                // Tek el hareketleri
-                if (results.multiHandLandmarks.length === 1) {
-                    if (indexUp && midUp && ringUp && pinkyUp) updatePos('stop', h[9].x, h[9].y);
-                    else if (indexUp && pinkyUp && !midUp && !ringUp) updatePos('wolf', h[9].x, h[9].y);
-                    else if (midUp && !indexUp && !ringUp && !pinkyUp) updatePos('middle', h[9].x, h[9].y);
-                    else if (h[4].y < h[3].y && !indexUp && !midUp) updatePos('like', h[9].x, h[9].y);
-                }
-                
-                drawConnectors(canvasCtx, h, HAND_CONNECTIONS, {color: '#00f2ff', lineWidth: 4});
-            });
-
-            // 2 el de işaret parmağıysa Özel Görsel
-            if (specialCount === 2) {
-                updatePos('special', centerX / 2, centerY / 2);
-            }
+function initModels() {
+    // YÜZ MODELİ (Arka planda hep çalışacak)
+    faceMesh = new FaceMesh({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}` });
+    faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: false, minDetectionConfidence: 0.5 });
+    faceMesh.onResults(results => {
+        if (results.multiFaceLandmarks) {
+            currentFaceLandmarks = results.multiFaceLandmarks[0];
+            // Yüz iskeletini çiz
+            canvasCtx.save();
+            drawConnectors(canvasCtx, currentFaceLandmarks, FACEMESH_CONTOURS, {color: '#00f2ff33', lineWidth: 1});
+            canvasCtx.restore();
         }
     });
-    startCam();
-}
 
-function initFace() {
-    detector = new FaceMesh({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}` });
-    detector.setOptions({ maxNumFaces: 1, refineLandmarks: false, minDetectionConfidence: 0.6 });
-
-    detector.onResults(results => {
+    // EL MODELİ
+    hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+    hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7 });
+    hands.onResults(results => {
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        if (results.multiFaceLandmarks && results.multiFaceLandmarks[0]) {
-            const f = results.multiFaceLandmarks[0];
-            drawConnectors(canvasCtx, f, FACEMESH_CONTOURS, {color: '#00f2ff', lineWidth: 1.5});
-            
-            const mouthDist = Math.abs(f[14].y - f[13].y);
-            if (mouthDist > 0.08) updatePos('surprise', f[1].x, f[1].y);
-            else hideAll();
-        } else { hideAll(); }
+        hideAll();
+
+        if (results.multiHandLandmarks) {
+            results.multiHandLandmarks.forEach((h, index) => {
+                const indexTip = h[8];
+                let isSaluting = false;
+
+                // --- ASKER SELAMI KONTROLÜ (YÜZ VE EL ÇAKIŞMASI) ---
+                if (currentFaceLandmarks) {
+                    const forehead = currentFaceLandmarks[10]; // Alın noktası
+                    const distToForehead = getDist(indexTip, forehead);
+
+                    // Eğer parmak ucu alna çok yakınsa ve el yatay duruyorsa
+                    if (distToForehead < 0.12) {
+                        updatePos('salute', forehead.x, forehead.y);
+                        isSaluting = true;
+                    }
+                }
+
+                if (!isSaluting) {
+                    // Diğer jestler (Kalp, Stop vs. önceki kodla aynı)
+                    const indexUp = h[8].y < h[6].y;
+                    const midUp = h[12].y < h[10].y;
+                    const ringUp = h[16].y < h[14].y;
+                    const pinkyUp = h[20].y < h[18].y;
+
+                    if (indexUp && midUp && ringUp && pinkyUp) updatePos('stop', h[9].x, h[9].y);
+                    else if (indexUp && pinkyUp && !midUp) updatePos('wolf', h[9].x, h[9].y);
+                    else if (midUp && !indexUp && !ringUp) updatePos('middle', h[9].x, h[9].y);
+                    else if (h[4].y < h[3].y && !indexUp) updatePos('like', h[9].x, h[9].y);
+                }
+
+                drawConnectors(canvasCtx, h, HAND_CONNECTIONS, {color: '#00f2ff', lineWidth: 3});
+            });
+        }
     });
+
     startCam();
 }
 
@@ -105,7 +107,9 @@ function startCam() {
         onFrame: async () => {
             canvasElement.width = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
-            if (detector) await detector.send({image: videoElement});
+            // İki modeli de aynı karede çalıştır
+            await faceMesh.send({image: videoElement});
+            await hands.send({image: videoElement});
         },
         width: 1280, height: 720
     });
